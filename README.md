@@ -1,2 +1,10 @@
-# dotfiles
-Dotfiles repo for personal configuration of a system 
+# Installation
+
+## Clone the repo
+
+
+## Install dependencies
+
+```shell
+./dotfiles_install.sh
+```
