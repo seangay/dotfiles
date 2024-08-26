@@ -1,0 +1,25 @@
+[user]
+	name = Sean Gay
+	email = sean.gay@gmail.com
+[push]
+	default = simple
+[core]
+	autocrlf = input
+	pager = cat
+[maintenance]
+  repo = /Users/seangay/development/projects/digitalpigeon
+  enabled = true
+  schedule = daily
+  [gc]
+    auto = 500
+  [prefetch]
+    auto = true
+  [commit-graph]
+    auto = true
+  [incremental-repack]
+    auto = true
+[credential]
+	helper =
+	helper = /usr/local/share/gcm-core/git-credential-manager
+[credential "https://dev.azure.com"]
+	useHttpPath = true
