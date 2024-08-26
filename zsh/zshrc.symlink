@@ -1,0 +1,78 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
+
+# Function to add directories to PATH without duplicates
+add_to_path() {
+    if [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$1:$PATH"
+    fi
+}
+
+# Define paths
+new_paths=("$HOME/bin" "/usr/local/bin" "/usr/local/sbin")
+
+# Loop through new paths and add them to PATH
+for p in "${new_paths[@]}"; do
+    add_to_path "$p"
+done
+
+
+### OH-MY-ZSHELL SETUP
+# Path to oh-my-zsh
+export ZSH="$HOME/.oh-my-zsh"
+
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Display history datetime - "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# HIST_STAMPS="yyyy-mm-dd"
+
+# Standard plugins: $ZSH/plugins/
+# Custom plugins: $ZSH_CUSTOM/plugins/
+# zsh-syntax-highlighting needs to be declared last
+plugins=(
+	git
+	zsh-nvm
+	zsh-autosuggestions
+	zsh-syntax-highlighting
+)
+
+# zoxide - https://www.youtube.com/watch?v=aghxkpyRVDY & https://github.com/ajeetdsouza/zoxide
+eval "$(zoxide init --cmd cd zsh)"
+
+autoload -Uz compinit && compinit
+
+# Default custom dir: $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+source $ZSH/oh-my-zsh.sh
+
+### ENVIRONMENT
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"                    # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+### CUSTOM TOOLS
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+#source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#source $(dirname $(gem which colorls))/tab_complete.sh
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
