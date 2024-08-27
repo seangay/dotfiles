@@ -5,8 +5,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
-
 # Function to add directories to PATH without duplicates
 add_to_path() {
     if [[ ":$PATH:" != *":$1:"* ]]; then
@@ -14,14 +12,42 @@ add_to_path() {
     fi
 }
 
-# Define paths
-new_paths=("$HOME/bin" "/usr/local/bin" "/usr/local/sbin")
+# Define default paths before other stuff is kicked in.
+new_paths=("$HOME/bin" "/usr/local/bin" "/usr/local/sbin", "$DOTFILES_HOME/bin")
 
 # Loop through new paths and add them to PATH
 for p in "${new_paths[@]}"; do
     add_to_path "$p"
 done
 
+
+### Setup stuff from Zach Holman's dotfiles: https://github.com/holman/dotfiles
+typeset -U config_files #unset any current values
+config_files=($DOTFILES_HOME/**/*.zsh)
+
+# load the path files
+for file in ${(M)config_files:#*/path.zsh}
+do
+  source $file
+done
+
+# load everything but the path and completion files
+for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
+do
+  source $file
+done
+
+# initialize autocomplete here, utherwise functions won't be loaded 
+autoload -Uz compinit && compinit
+
+# load every completion after autocomplete loads
+for file in ${(M)config_files:#*/completion.zsh}
+do
+  source $file
+done
+
+# remove the variable declaration from shell use.
+unset config_files
 
 ### OH-MY-ZSHELL SETUP
 # Path to oh-my-zsh
@@ -45,8 +71,6 @@ plugins=(
 
 # zoxide - https://www.youtube.com/watch?v=aghxkpyRVDY & https://github.com/ajeetdsouza/zoxide
 eval "$(zoxide init --cmd cd zsh)"
-
-autoload -Uz compinit && compinit
 
 # Default custom dir: $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder

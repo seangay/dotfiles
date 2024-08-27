@@ -7,7 +7,12 @@
 
 set -e
 
-export DOTFILES_HOME="$(cd "$( dirname "$parentDirectory" )" && pwd -P)"
+if [ -z "${DOTFILES_HOME}" ]; then
+  echo "DOTFILES_HOME undefined. Attempting to determine the path"
+  export DOTFILES_HOME="$(cd "$( dirname "$parentDirectory" )" && pwd -P)"
+  echo " DOTFILES_HOME has been set to ${$DOTFILES_HOME}"
+fi
+
 
 displayUsageAndExit() {
 	echo "dot -- dotfiles management"
@@ -15,10 +20,14 @@ displayUsageAndExit() {
 	echo "Usage: dot [options]"
 	echo ""
 	echo "Options:"
-	echo "  -e, --edit    Open dotfiles directory for editing"
-	echo "  -h, --help    Show this help message and exit"
-	exit
+	echo "  -e, --edit              Open dotfiles directory for editing"
+	echo "  -m, --macSetDefaults    Also set mac defaults if flag is provided"
+	echo "  -h, --help              Show this help message and exit"
+  exit
 }
+
+# Initialize params updated via args
+mac_set_defaults=false
 
 if [ $# -eq 0 ]; then
     echo "No arguments provided, continuing script execution..."
@@ -33,6 +42,9 @@ else
         exec "$EDITOR" "$DOTFILES_HOME"
         exit
         ;;
+      "-m"|"--macSetDefaults")
+        mac_set_defaults=true
+        ;;
       *)
         echo "Invalid option: $1"
         displayUsageAndExit
@@ -46,8 +58,10 @@ fi
 echo "› git pull"
 git -C $DOTFILES_HOME pull
 
-# Set macOS defaults
-$DOTFILES_HOME/macos/set-defaults.sh
+if [ "$mac_set_defaults" = true ]; then
+  # Set macOS defaults
+  $DOTFILES_HOME/macos/set-defaults.sh
+fi
 
 # Install homebrew
 # $ZSH/homebrew/install.sh 2>&1

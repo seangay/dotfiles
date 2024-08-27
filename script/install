@@ -4,8 +4,15 @@
 
 set -e
 
-echo "› brew bundle"
-brew bundle
+brew_file_location=$DOTFILES_HOME/Brewfile
+
+if [ ! -f "${brew_file_location}" ]; then
+    echo "Unable to locate BrewFile at ${brew_file_location}... exiting"
+    exit
+fi 
+
+echo "› brew bundle --file=${brew_file_location}"
+brew bundle --file=${brew_file_location}
 
 # find the installers and run them iteratively
-find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
+find $DOTFILES_HOME -name install.sh | while read installer ; do sh -c "${installer}" ; done
