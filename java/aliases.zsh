@@ -1,0 +1,1 @@
+alias java_all='/usr/libexec/java_home -V'
